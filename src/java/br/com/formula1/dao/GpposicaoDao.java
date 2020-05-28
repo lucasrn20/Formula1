@@ -6,6 +6,7 @@
 package br.com.formula1.dao;
 
 import br.com.formula1.domain.Gpposicao;
+import br.com.formula1.domain.Grandprix;
 import br.com.formula1.util.HibernateUtil;
 import java.util.List;
 import org.hibernate.Query;
@@ -16,11 +17,11 @@ import org.hibernate.Session;
  * @author lucas
  */
 public class GpposicaoDao {
-    public List<Gpposicao> listar(){
+    public List<Gpposicao> listar(Grandprix grandprix){
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         try{
-            List<Gpposicao> gpposicaos = session.createQuery("from Gpposicao where id =  order by classificacao").list();
+            List<Gpposicao> gpposicaos = session.createQuery("from Gpposicao where id = "+grandprix.getId()+" order by classificacao").list();
             session.getTransaction().commit();
             return gpposicaos;
         }catch(Exception e){
@@ -58,12 +59,12 @@ public class GpposicaoDao {
         }
     } 
      
-    public boolean excluir(){
+    public boolean excluir(Grandprix grandprix){
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         try{
-            Query query = session.createQuery("delete gpposicao where id = :idOS");
-            query.setParameter("idOS",0);
+            Query query = session.createQuery("delete gpposicao where id = :idGP");
+            query.setParameter("idGP", grandprix.getId());
             query.executeUpdate();
             session.getTransaction().commit();
             return true;
